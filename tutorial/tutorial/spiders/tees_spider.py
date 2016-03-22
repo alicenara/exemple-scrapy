@@ -1,3 +1,6 @@
+import time
+from datetime import date
+
 import scrapy 
 from tutorial.items import TeesItem
 
@@ -9,7 +12,9 @@ class TeesSpider(scrapy.Spider):
   ]
 
   def parse(self,response):
-    for i in response.xpath('//item[pubDate="Mon, 21 Mar 2016 23:00:00 +0000"]'):
+    today = date.today()
+    today = today.replace(day=today.day - 1)
+    for i in response.xpath('//item[pubDate="'+today.strftime("%a, %d %b %Y")+' 23:00:00 +0000"]'):
       item = TeesItem()
       item['title'] = i.xpath('description/text()').extract()
       item['link'] = i.xpath('guid/text()').extract()
